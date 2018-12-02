@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using evaBACKEND.Data;
 using evaBACKEND.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace evaBACKEND.Controllers
 {
@@ -15,10 +16,12 @@ namespace evaBACKEND.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly AppDbContext _context;
+		private readonly UserManager<AppUser> _userManager;
 
-        public CoursesController(AppDbContext context)
+        public CoursesController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+			_userManager = userManager;
         }
 
         // GET: api/Courses
@@ -86,11 +89,18 @@ namespace evaBACKEND.Controllers
         [HttpPost]
         public async Task<IActionResult> PostCourse([FromBody] Course course)
         {
+            if (!HttpContext.User.IsInRole("Docente"))
+			{
+				return Unauthorized();
+			}
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            var username = HttpContext.User.Claims.First().Value;
+			AppUser teacher = await _userManager.FindByNameAsync(username);
+			course.Teacher = teacher;
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
