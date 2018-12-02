@@ -87,8 +87,7 @@ namespace evaBACKEND
 				app.UseHsts();
 			}
 
-			//app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
-			//app.UseIdentity();
+			app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
 			app.UseAuthentication();
 			app.UseHttpsRedirection();
 			app.UseMvc();
