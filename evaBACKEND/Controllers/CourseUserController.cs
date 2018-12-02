@@ -30,7 +30,7 @@ namespace evaBACKEND.Controllers
 
             var userRole = _context.UserRoles.Where(ur => ur.UserId == courseUser.Id).First();
             var role = _context.Roles.Where(r => r.Id == userRole.RoleId).First();
-            if (role.Name != "Admin")
+            if (role.Name != "Estudiante")
             {
                 return BadRequest("User pretend to add to this course is not student.!");
             }
