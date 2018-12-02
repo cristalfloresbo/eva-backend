@@ -120,7 +120,7 @@ namespace evaBACKEND.Controllers
 
 
         [HttpGet]
-        [Route("students/{courseId}")]
+        [Route("{courseId}/students")]
         public IEnumerable<AppUser> GetAllStudentsOfACourse(long courseId)
         {
             var usersOfCourse = new List<AppUser>();
@@ -131,6 +131,26 @@ namespace evaBACKEND.Controllers
                 usersOfCourse.Add(currentUser);
             }
             return usersOfCourse;
+        }
+
+        [HttpPost]
+        [Route("students")]
+        public IActionResult AddUserToCourse([FromBody] CourseUser courseUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userRole = _context.UserRoles.Where(ur => ur.UserId == courseUser.Id).First();
+            var role = _context.Roles.Where(r => r.Id == userRole.RoleId).First();
+            if (role.Name != "Estudiante")
+            {
+                return BadRequest("User pretended to add to this course is not student.!");
+            }
+            _context.CourseUsers.Add(courseUser);
+            _context.SaveChanges();
+            return Ok(courseUser);
         }
 
         private bool CourseExists(long id)
