@@ -20,7 +20,7 @@ namespace evaBACKEND.Models
 		[Required]
 		public DateTime DeliveryDate { get; set; }
 
-		[Required]
+        [Required]
 		public Course Course { get; set; }
 	}
 }

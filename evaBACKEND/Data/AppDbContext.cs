@@ -20,5 +20,15 @@ namespace evaBACKEND.Data
         public DbSet<evaBACKEND.Models.Task> Tasks { get; set; }
 
 		public DbSet<Grade> Grades { get; set; }
+
+        public DbSet<CourseUser> CourseUsers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<CourseUser>()
+                .HasKey(cu => new { cu.CourseId, cu.Id });
+        }
     }
 }
