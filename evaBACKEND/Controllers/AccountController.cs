@@ -37,7 +37,7 @@ namespace evaBACKEND.Controllers
             _context = context;
         }
 
-        [Route("register")]
+        [Route("account/register")]
 		[Authorize(AuthenticationSchemes = "Bearer", Roles ="Admin")]
         [HttpPost]
 		public async Task<IActionResult> CreateUserAsync([FromBody] UserModel model)
