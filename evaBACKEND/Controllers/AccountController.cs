@@ -37,14 +37,11 @@ namespace evaBACKEND.Controllers
             _context = context;
         }
 
-        [Route("account/register")]
+        [Route("register")]
+		[Authorize(AuthenticationSchemes = "Bearer", Roles ="Admin")]
         [HttpPost]
 		public async Task<IActionResult> CreateUserAsync([FromBody] UserModel model)
         {
-            if (!HttpContext.User.IsInRole("Admin"))
-            {
-                return Unauthorized();
-            }
             if (!ModelState.IsValid)
             {
                 return BadRequest("User model is invalid");
@@ -124,11 +121,12 @@ namespace evaBACKEND.Controllers
             var expiration = DateTime.UtcNow.AddHours(1);
 
 			var claims = new List<Claim>
-			{ 
+			{
 				new Claim(JwtRegisteredClaimNames.Sub, model.Email),
 				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-				new Claim("roles", rolesByUser.First())
-            };
+				new Claim("roles", rolesByUser.First()),
+				new Claim("id", principal.Id),
+			};
 
 			JwtSecurityToken token = new JwtSecurityToken(
 			   issuer: _configuration["Jwt:Issuer"],
@@ -137,6 +135,7 @@ namespace evaBACKEND.Controllers
 			   expires: expiration,
 			   signingCredentials: creds
 			);
+
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token)
