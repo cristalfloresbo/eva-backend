@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,6 +22,9 @@ namespace evaBACKEND.Models
 		public DateTime DeliveryDate { get; set; }
 
         [Required]
+        public long CourseId { get; set; }
+
+        [JsonIgnore]
 		public Course Course { get; set; }
 	}
 }
