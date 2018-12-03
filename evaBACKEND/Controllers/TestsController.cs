@@ -130,6 +130,8 @@ namespace evaBACKEND.Controllers
 			Test testToCreate = new Test();
 			testToCreate.Title = test.Title;
 			testToCreate.Course = course;
+			testToCreate.Date = test.Date;
+			testToCreate.Description = test.Description;
 
             _context.Tests.Add(testToCreate);
             await _context.SaveChangesAsync();
@@ -138,13 +140,18 @@ namespace evaBACKEND.Controllers
 
 			foreach (var question in questions) {
 				question.Test = testToCreate;
-				_context.Questions.Add(question);
+			    _context.Questions.Add(question);
 				await _context.SaveChangesAsync();
+				var answers = question.Answers;
+				foreach (var answer in answers) {
+					answer.Question = question;
+					_context.Answers.Add(answer);
+					await _context.SaveChangesAsync();
+				}
+				
 			}
 
-			test.TestId = testToCreate.TestId;
-			test.Course = course;
-            return CreatedAtAction("GetTest", new { id = test.TestId }, test);
+            return CreatedAtAction("GetTest", new { id = test.TestId }, testToCreate);
         }
 
         // DELETE: api/Tests/5
