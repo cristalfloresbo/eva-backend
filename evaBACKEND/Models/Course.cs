@@ -9,7 +9,7 @@ namespace evaBACKEND.Models
 {
     public class Course
     {
-        public long ID { get; set; }
+        public long CourseId { get; set; }
 
         public String Name { get; set; }
 
@@ -21,6 +21,9 @@ namespace evaBACKEND.Models
         public List<AppUser> Students { get; set; }
 
         public DateTime StartDate { get; set; }
-		
+
+        [NotMapped]
+        public List<Task> Tasks { get; set; }
+
     }
 }

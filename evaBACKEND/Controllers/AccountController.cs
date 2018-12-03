@@ -16,7 +16,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace evaBACKEND.Controllers
 {
-    [Route("account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -24,26 +23,28 @@ namespace evaBACKEND.Controllers
         private readonly SignInManager<AppUser> _signInManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly IConfiguration _configuration;
+        private readonly AppDbContext _context;
 
         public AccountController(UserManager<AppUser> userManager, 
 			SignInManager<AppUser> signInManager,
 			RoleManager<IdentityRole> roleManager,
-			IConfiguration configuration)
+			IConfiguration configuration, AppDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
 			_roleManager = roleManager;
             _configuration = configuration;
+            _context = context;
         }
 
-        [Route("register")]
+        [Route("account/register")]
         [HttpPost]
 		public async Task<IActionResult> CreateUserAsync([FromBody] UserModel model)
         {
-			if (!HttpContext.User.IsInRole("Admin"))
-			{
-				return Unauthorized();
-			}
+            if (!HttpContext.User.IsInRole("Admin"))
+            {
+                return Unauthorized();
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest("User model is invalid");
@@ -59,8 +60,8 @@ namespace evaBACKEND.Controllers
             return BadRequest($"User with email: {model.Email} already exist.!");
         }
 
-		[AllowAnonymous]
-		[Route("login")]
+        [AllowAnonymous]
+        [Route("account/login")]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -85,6 +86,32 @@ namespace evaBACKEND.Controllers
 			userPrincipal.Email = model.Email;
 			userPrincipal.Password = model.Password;
             return await BuildTokenAsync(userPrincipal);
+        }
+
+        [HttpGet]
+        [Route("users")]
+        public IEnumerable<AppUser> GetAllUsers()
+        {
+            return _context.Users.ToList();
+        }
+
+        [HttpGet]
+        [Route("users/{id}")]
+        public IActionResult GetUserById([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _context.Users.Find(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
 
         private async Task<IActionResult> BuildTokenAsync(UserModel model)
