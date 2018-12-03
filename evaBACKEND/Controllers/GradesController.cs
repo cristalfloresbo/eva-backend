@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using evaBACKEND.Data;
 using evaBACKEND.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace evaBACKEND.Controllers
 {
@@ -15,10 +16,12 @@ namespace evaBACKEND.Controllers
     public class GradesController : ControllerBase
     {
         private readonly AppDbContext _context;
+		private readonly UserManager<AppUser> _userManager;
 
-        public GradesController(AppDbContext context)
+		public GradesController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+			_userManager = userManager;
         }
 
         // GET: api/Grades
@@ -86,10 +89,11 @@ namespace evaBACKEND.Controllers
         [HttpPost]
         public async Task<IActionResult> PostGrade([FromBody] Grade grade)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+			var student = await _userManager.FindByIdAsync(grade.Student.Id);
+			var course = await _context.Courses.FindAsync(grade.Course.CourseId);
+
+			grade.Course = course;
+			grade.Student = student;
 
             _context.Grades.Add(grade);
             await _context.SaveChangesAsync();

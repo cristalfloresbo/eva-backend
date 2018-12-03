@@ -12,10 +12,8 @@ namespace evaBACKEND.Models
     {
         public long CourseId { get; set; }
 
-        [Required]
         public String Name { get; set; }
 
-        [Required]
         public String Description { get; set; }
 
         public AppUser Teacher { get; set; }
@@ -26,5 +24,5 @@ namespace evaBACKEND.Models
         public DateTime StartDate { get; set; }
 
         public ICollection<Task> Tasks { get; set; }
-    }
+	}
 }

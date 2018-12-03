@@ -23,7 +23,11 @@ namespace evaBACKEND.Data
 
         public DbSet<CourseUser> CourseUsers { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+		public DbSet<Test> Tests { get; set; }
+
+		public DbSet<Question> Questions { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
