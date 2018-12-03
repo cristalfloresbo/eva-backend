@@ -13,8 +13,10 @@ namespace evaBACKEND.Models
 		public long QuestionId { get; set; }
 
 		[Required]
-		public string Title { get; set; }
 
+		public string Value { get; set; }
+
+		[NotMapped]
 		public ICollection<Answer> Answers { get; set; }
 
 		public Test Test { get; set; }

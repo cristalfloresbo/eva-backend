@@ -32,8 +32,9 @@ namespace evaBACKEND.Controllers
             return _context.Tests;
         }
 
-        // GET: api/Tests/5
+        // GET: api/tests/5/questions
         [HttpGet("tests/{id}/questions")]
+
         public async Task<IActionResult> GetTest([FromRoute] long id)
         {
             if (!ModelState.IsValid)
@@ -49,12 +50,32 @@ namespace evaBACKEND.Controllers
             }
 
 			var questions = _context.Questions.Where(question => question.Test.Equals(test)).ToList();
-
             return Ok(questions);
         }
 
-        // PUT: api/Tests/5
-        [HttpPut("tests/{id}")]
+		// GET: api/courses/5/tests
+		[HttpGet("courses/{id}/tests")]
+		public async Task<IActionResult> GetTestsByCourse([FromRoute] long id)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			var couse = await _context.Courses.FindAsync(id);
+
+			if (couse == null)
+			{
+				return NotFound();
+			}
+
+			var tests = _context.Tests.Where(test => test.Course.Equals(couse)).ToList();
+
+			return Ok(tests);
+		}
+
+		// PUT: api/Tests/5
+		[HttpPut("tests/{id}")]
         public async Task<IActionResult> PutTest([FromRoute] long id, [FromBody] Test test)
         {
             if (!ModelState.IsValid)
