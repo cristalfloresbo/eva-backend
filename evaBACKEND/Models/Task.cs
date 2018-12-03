@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,6 +21,8 @@ namespace evaBACKEND.Models
 
 		[Required]
 		public DateTime DeliveryDate { get; set; }
+
+        public ICollection<Presentation> Presentations { get; set; }
 
         [Required]
         public long CourseId { get; set; }

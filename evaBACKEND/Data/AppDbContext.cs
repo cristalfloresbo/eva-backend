@@ -23,6 +23,8 @@ namespace evaBACKEND.Data
 
         public DbSet<CourseUser> CourseUsers { get; set; }
 
+        public DbSet<Presentation> Presentations { get; set; }
+
 		public DbSet<Test> Tests { get; set; }
 
 		public DbSet<Question> Questions { get; set; }
@@ -33,6 +35,8 @@ namespace evaBACKEND.Data
 
             builder.Entity<CourseUser>()
                 .HasKey(cu => new { cu.CourseId, cu.Id });
+
+            builder.Entity<Presentation>().HasKey(p => new { p.StudentId, p.TaskId });
         }
     }
 }
