@@ -13,7 +13,6 @@ namespace evaBACKEND.Models
 		public long QuestionId { get; set; }
 
 		[Required]
-
 		public string Value { get; set; }
 
 		[NotMapped]
