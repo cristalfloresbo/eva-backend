@@ -14,6 +14,8 @@ namespace evaBACKEND.Models
 		[Required]
 		public string Title { get; set; }
 
+		public string Description { get; set; }
+
 		public DateTime Date { get; set; }
 
 		public Course Course { get; set; }

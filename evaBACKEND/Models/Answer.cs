@@ -10,5 +10,7 @@ namespace evaBACKEND.Models
 		public long AnswerId { get; set; }
 
 		public String Value { get; set; }
+
+		public Question Question { get; set; }
 	}
 }
