@@ -31,6 +31,10 @@ namespace evaBACKEND.Data
 
 		public DbSet<Answer> Answers { get; set; }
 
+		public DbSet<TestDelivered> TestDelivered { get; set; }
+
+		public DbSet<AnswerDelivered> AnswerDelivered { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -39,6 +43,10 @@ namespace evaBACKEND.Data
                 .HasKey(cu => new { cu.CourseId, cu.Id });
 
             builder.Entity<Presentation>().HasKey(p => new { p.StudentId, p.TaskId });
-        }
+
+			builder.Entity<TestDelivered>().HasKey(t => new { t.TestId, t.StudentId });
+
+			builder.Entity<AnswerDelivered>().HasKey(a => new { a.QuestionId, a.AnswerId });
+		}
     }
 }
