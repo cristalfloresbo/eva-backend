@@ -47,12 +47,13 @@ namespace evaBACKEND.Controllers
             }
 
             var course = await _context.Courses.FindAsync(id);
-
             if (course == null)
             {
                 return NotFound();
             }
 
+            var tasks = _context.Tasks.Where(t => t.Course.Equals(course)).ToList();
+            course.Tasks = tasks;
             return Ok(course);
         }
 

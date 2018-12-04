@@ -18,7 +18,7 @@ namespace evaBACKEND.Models
         [Key, Column(Order = 1)]
         public long TaskId { get; set; }
 
-        public DateTime deliveryDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
 
         public Grade Grade { get; set; }
 
@@ -30,7 +30,7 @@ namespace evaBACKEND.Models
 
         public Presentation()
         {
-            deliveryDate = DateTime.Now;
+            DeliveryDate = DateTime.Now;
         }
     }
 }
