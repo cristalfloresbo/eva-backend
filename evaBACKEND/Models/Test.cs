@@ -18,6 +18,10 @@ namespace evaBACKEND.Models
 
 		public DateTime Date { get; set; }
 
+		public TimeSpan TimeStart { get; set; }
+
+		public TimeSpan TimeEnd { get; set; }
+
 		public Course Course { get; set; }
 
 		[NotMapped]

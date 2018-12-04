@@ -143,6 +143,8 @@ namespace evaBACKEND.Controllers
 			testToCreate.Course = course;
 			testToCreate.Date = test.Date;
 			testToCreate.Description = test.Description;
+			testToCreate.TimeStart = test.TimeStart;
+			testToCreate.TimeEnd = test.TimeEnd;
 
             _context.Tests.Add(testToCreate);
             await _context.SaveChangesAsync();
