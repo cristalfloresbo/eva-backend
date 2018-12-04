@@ -28,7 +28,13 @@ namespace evaBACKEND.Controllers
         [HttpGet]
         public IEnumerable<Course> GetCourses()
         {
-            return _context.Courses;
+            if (HttpContext.User.IsInRole("Docente"))
+            {
+                var userId = HttpContext.User.Claims.ElementAt(3).Value;
+                var some = _context.Courses.Where(c => c.Teacher.Id == userId).ToList();
+                return some;
+            }
+            return _context.Courses.Include(c => c.Teacher);
         }
 
         // GET: api/Courses/5
