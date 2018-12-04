@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace evaBACKEND.Controllers
 {
-    [Route("api/event/tasks")]
+    [Route("api/event/tasks/")]
     [ApiController]
     public class TasksEventController : ControllerBase
     {
@@ -37,8 +37,8 @@ namespace evaBACKEND.Controllers
                 return BadRequest(ModelState);
             }
 
-            var task = await _context.Tasks.FindAsync(id);
-            var course = await _context.Courses.FindAsync(task.Course.CourseId);
+            var task = await _context.Tasks.FindAsync((long)id);
+            var course = await _context.Courses.FindAsync(task.CourseId);
             if (task == null || course == null)
             {
                 return NotFound();
@@ -47,10 +47,6 @@ namespace evaBACKEND.Controllers
             var username = HttpContext.User.Claims.First().Value;
             AppUser student = await _userManager.FindByNameAsync(username);
 
-            if (course.Students.Contains(student))
-            {
-                return Unauthorized();
-            }
             Presentation presentation = new Presentation();
             presentation.StudentId = student.Id;
             presentation.Student = student;
