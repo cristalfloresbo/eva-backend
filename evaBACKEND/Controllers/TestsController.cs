@@ -50,7 +50,18 @@ namespace evaBACKEND.Controllers
             }
 
 			var questions = _context.Questions.Where(question => question.Test.Equals(test)).ToList();
-            return Ok(questions);
+			var questionsToResponse = new List<Object>();
+			 
+			foreach (var q in questions)
+			{
+				var answersByQuestion = _context.Answers.Where(answer => answer.Question.Equals(q)).ToList();
+				questionsToResponse.Add(new {
+					question = q,
+					answers = answersByQuestion
+				});
+			}
+
+            return Ok(questionsToResponse);
         }
 
 		// GET: api/courses/5/tests
