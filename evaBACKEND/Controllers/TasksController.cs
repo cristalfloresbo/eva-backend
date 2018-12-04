@@ -52,6 +52,8 @@ namespace evaBACKEND.Controllers
                 return BadRequest("The task doesn't belong to the course");
             }
 
+            var press = _context.Presentations.Where(p => p.Task.Equals(task)).ToList();
+            task.Presentations = press;
             return Ok(task);
         }
 
@@ -69,6 +71,7 @@ namespace evaBACKEND.Controllers
                 return NotFound("Course not found");
             }
 
+            var tasks = _context.Tasks.Where(task => task.Course.Equals(course)).ToList();
             return Ok(course.Tasks);
         }
 
