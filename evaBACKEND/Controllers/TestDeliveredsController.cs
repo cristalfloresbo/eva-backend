@@ -145,21 +145,14 @@ namespace evaBACKEND.Controllers
 
 			_context.TestDelivered.Add(testDelivered);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (TestDeliveredExists(testDelivered.TestId, userId))
-                {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+			if (TestDeliveredExists(testDelivered.TestId, userId))
+			{
+				return new StatusCodeResult(StatusCodes.Status409Conflict);
+			}
+			else
+			{
+				await _context.SaveChangesAsync();
+			}
 
             return CreatedAtAction("GetTestDelivered", new { id = testDelivered.TestId }, testDelivered);
         }
