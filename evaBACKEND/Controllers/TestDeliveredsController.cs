@@ -120,7 +120,7 @@ namespace evaBACKEND.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TestDeliveredExists(id))
+                if (!TestDeliveredExists(id,""))
                 {
                     return NotFound();
                 }
@@ -151,7 +151,7 @@ namespace evaBACKEND.Controllers
             }
             catch (DbUpdateException)
             {
-                if (TestDeliveredExists(testDelivered.TestId))
+                if (TestDeliveredExists(testDelivered.TestId, userId))
                 {
                     return new StatusCodeResult(StatusCodes.Status409Conflict);
                 }
@@ -185,9 +185,9 @@ namespace evaBACKEND.Controllers
             return Ok(testDelivered);
         }
 
-        private bool TestDeliveredExists(long id)
+        private bool TestDeliveredExists(long id, string studentId)
         {
-            return _context.TestDelivered.Any(e => e.TestId == id);
+            return _context.TestDelivered.Any(e => e.TestId == id && e.StudentId.Equals(studentId));
         }
     }
 }
