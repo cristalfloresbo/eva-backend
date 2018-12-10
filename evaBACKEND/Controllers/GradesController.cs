@@ -47,8 +47,8 @@ namespace evaBACKEND.Controllers
                 return NotFound();
             }
 
-            var course = _context.Courses.Where(c => c.Equals(grade.Course));
-            var student = await _userManager.FindByIdAsync(grade.Student.Id);
+            Course course = await _context.Courses.FindAsync(grade.CourseId);
+            var student = await _userManager.FindByIdAsync(grade.StudentId);
             grade.Course = (Course) course;
             grade.Student = student;
             return Ok(grade);

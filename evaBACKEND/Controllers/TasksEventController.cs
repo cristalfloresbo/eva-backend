@@ -24,8 +24,9 @@ namespace evaBACKEND.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("{id}/deliver")]
-        public async Task<IActionResult> PostTask(int id)
+        //Enviar tarea como estudiante
+        [HttpPost("{taskId}/deliver")]
+        public async Task<IActionResult> PostTask([FromRoute] int taskId, [FromBody] Presentation presentation)
         {
             if (!HttpContext.User.IsInRole("Estudiante"))
             {
@@ -37,7 +38,7 @@ namespace evaBACKEND.Controllers
                 return BadRequest(ModelState);
             }
 
-            var task = await _context.Tasks.FindAsync((long)id);
+            var task = await _context.Tasks.FindAsync((long)taskId);
             var course = await _context.Courses.FindAsync(task.CourseId);
             if (task == null || course == null)
             {
@@ -47,10 +48,9 @@ namespace evaBACKEND.Controllers
             var username = HttpContext.User.Claims.First().Value;
             AppUser student = await _userManager.FindByNameAsync(username);
 
-            Presentation presentation = new Presentation();
             presentation.StudentId = student.Id;
             presentation.Student = student;
-            presentation.TaskId = id;
+            presentation.TaskId = taskId;
             presentation.Task = task;
             _context.Presentations.Add(presentation);
             task.Presentations.Add(presentation);
@@ -60,6 +60,7 @@ namespace evaBACKEND.Controllers
             return Ok(presentation);
         }
 
+        //Returns a  presentation for the student
         [HttpGet("{id}/view")]
         public async Task<IActionResult> ViewDeliveredTask(int id)
         {
@@ -84,8 +85,9 @@ namespace evaBACKEND.Controllers
             return Ok(pres);
         }
 
-        [HttpPut("{id}/grade/{studentId}")]
-        public async Task<IActionResult> GradeTask(int id, string studentId, [FromBody] int gradeValue)
+        //Teacher can grade a students presentation
+        [HttpPut("{taskId}/grade/{studentId}")]
+        public async Task<IActionResult> GradeTask([FromRoute] int taskId, [FromRoute] string studentId, [FromBody] int gradeValue)
         {
             if (!HttpContext.User.IsInRole("Docente"))
             {
@@ -97,9 +99,9 @@ namespace evaBACKEND.Controllers
                 return BadRequest(ModelState);
             }
 
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _context.Tasks.FindAsync(taskId);
             var student = await _userManager.FindByIdAsync(studentId);
-            Presentation pres = await _context.Presentations.FindAsync((long)id, studentId);
+            Presentation pres = await _context.Presentations.FindAsync((long)taskId, studentId);
             if (pres == null)
             {
                 return NotFound();

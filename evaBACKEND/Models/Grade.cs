@@ -10,9 +10,13 @@ namespace evaBACKEND.Models
 	{
 		public long ID { get; set; }
 
-		public AppUser Student { get; set; }
+        public string StudentId { get; set; }
 
-		public Course Course { get; set; }
+        public AppUser Student { get; set; }
+
+        public long CourseId { get; set; }
+
+        public Course Course { get; set; }
 
 		public int Value { get; set; }
 
