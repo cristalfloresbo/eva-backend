@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using evaBACKEND.Data;
 using evaBACKEND.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace evaBACKEND.Controllers
 {
@@ -15,10 +16,13 @@ namespace evaBACKEND.Controllers
     public class TestDeliveredsController : ControllerBase
     {
         private readonly AppDbContext _context;
+		private readonly UserManager<AppUser> _userManager;
 
-        public TestDeliveredsController(AppDbContext context)
+
+		public TestDeliveredsController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+			_userManager = userManager;
         }
 
         // GET: api/event/tests
@@ -28,7 +32,7 @@ namespace evaBACKEND.Controllers
             return _context.TestDelivered;
         }
 
-        // GET: api/TestDelivereds/5
+        // GET: api/event/tests/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTestDelivered([FromRoute] long id)
         {
@@ -37,9 +41,24 @@ namespace evaBACKEND.Controllers
                 return BadRequest(ModelState);
             }
 
-            var testDelivered = await _context.TestDelivered.FindAsync(id);
+			var toResponse = new List<Object>();
+            var testDelivered =  _context.TestDelivered.Where(ts => ts.TestId == id).ToList();
+			foreach (var test in testDelivered)
+			{
+				var student = await _userManager.FindByIdAsync(test.StudentId);
+				test.Student = student;
+				//var answer = await _context.AnswerDelivered
+				//	.Where(aw => aw.TestDelivered.StudentId == test.StudentId && aw.TestDelivered.TestId == id).ToListAsync();
+				//toResponse.Add(new
+				//{
+				//	testdeliver = test,
+				//	answers = answer
+				//});
+			}
 
-            if (testDelivered == null)
+
+
+			if (testDelivered == null)
             {
                 return NotFound();
             }
@@ -47,8 +66,40 @@ namespace evaBACKEND.Controllers
             return Ok(testDelivered);
         }
 
-        // PUT: api/TestDelivereds/5
-        [HttpPut("{id}")]
+		// GET: api/event/tests/5
+		[HttpGet("{id}/students/{studentId}")]
+		public async Task<IActionResult> GetTestDeliveredByStudent([FromRoute] long id,
+			[FromRoute] string studentId)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
+
+			var toResponse = new Object();
+			var toAnswers = new List<Object>();
+
+			var answers = await _context.AnswerDelivered
+				.Where(aw => aw.TestDelivered.StudentId == studentId && aw.TestDelivered.TestId == id).ToListAsync();
+
+			foreach (var delivered in answers) {
+				var questionFinded = await _context.Questions.FindAsync(delivered.QuestionId);
+				var answerFinded = await _context.Answers.FindAsync(delivered.AnswerId);
+				toAnswers.Add(new {
+					question = questionFinded,
+				    answer = answerFinded
+				});
+			}
+			toResponse = new
+			{
+				answers = toAnswers
+			};
+
+			return Ok(toResponse);
+		}
+
+		// PUT: api/TestDelivereds/5
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutTestDelivered([FromRoute] long id, [FromBody] TestDelivered testDelivered)
         {
             if (!ModelState.IsValid)

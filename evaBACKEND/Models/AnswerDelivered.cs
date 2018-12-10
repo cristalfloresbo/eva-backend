@@ -22,5 +22,7 @@ namespace evaBACKEND.Models
 		[JsonIgnore]
 		public Answer Answer { get; set; }
 
+		public TestDelivered TestDelivered { get; set; }
+
 	}
 }

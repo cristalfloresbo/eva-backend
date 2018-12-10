@@ -23,7 +23,6 @@ namespace evaBACKEND.Models
 
 		public ICollection<AnswerDelivered> Answers { get; set; }
 
-		[JsonIgnore]
 		public AppUser Student { get; set; }
 
 		[JsonIgnore]
