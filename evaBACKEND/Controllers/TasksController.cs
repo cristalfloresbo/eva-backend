@@ -181,5 +181,31 @@ namespace evaBACKEND.Controllers
         {
             return _context.Tasks.Any(e => e.ID == id);
         }
+
+        //Returns a  presentations by task and/or student
+        [HttpGet("tasks/{taskId}/presentations/{studentdId?}")]
+        public async Task<IActionResult> GetPresentationsByTask(int taskId, string studentdId = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Models.Task task;
+            if (studentdId == null)
+            {
+                task = await _context.Tasks.FindAsync((long)taskId);
+                var press = _context.Presentations.Where(p => p.Task.Equals(task)).ToList();
+                return Ok(press);
+            } else
+            {
+                task = await _context.Tasks.FindAsync(taskId);
+                AppUser student = await _userManager.FindByIdAsync(studentdId);
+                Presentation pres = await _context.Presentations.FindAsync((long)taskId, student.Id);
+                pres.Task = task;
+                pres.Student = student;
+                return Ok(pres);
+            }
+        }
     }
 }
