@@ -46,7 +46,7 @@ namespace evaBACKEND.Controllers
             }
 
             var username = HttpContext.User.Claims.First().Value;
-            AppUser student = await _userManager.FindByNameAsync(username);
+            AppUser student = await _userManager.FindByEmailAsync(username);
 
             presentation.StudentId = student.Id;
             presentation.Student = student;

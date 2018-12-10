@@ -207,5 +207,30 @@ namespace evaBACKEND.Controllers
                 return Ok(pres);
             }
         }
+
+        //Terurns all the sent tasks of a student
+        [HttpGet("my-tasks")]
+        public async Task<IActionResult> GetPresentations()
+        {
+            if (!HttpContext.User.IsInRole("Estudiante"))
+            {
+                return Unauthorized();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var username = HttpContext.User.Claims.First().Value;
+            AppUser student = await _userManager.FindByEmailAsync(username);
+            var pres = _context.Presentations.Where(p => p.StudentId.Equals(student.Id)).ToList();
+            if (pres == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(pres);
+        }
     }
 }
